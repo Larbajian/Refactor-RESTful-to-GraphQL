@@ -35,11 +35,11 @@ const resolvers = {
       return { jwToken, user };
     },
 
-    saveBook: async (parent, { userId, bookId, authors, description, title, string, image, link }, context) => {
+    saveBook: async (parent, { userId, bookId, authors, description, title, string, image}, context) => {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: userId },
-          { $addToSet: { savedBooks: {bookId, authors, description, title, string, image, link} } },
+          { $addToSet: { savedBooks: {bookId, authors, description, title, string, image} } },
           {
             new: true,
             runValidators: true,

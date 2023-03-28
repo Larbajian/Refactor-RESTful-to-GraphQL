@@ -30,11 +30,10 @@ type Query {
 
 input saveBookInput{
     bookId: ID!
-    authors: [String]
-    description: String
+    authors: [String]!
+    description: String!
     title: String!
-    image: String
-    link: String
+    image:String!
 }
 
 type Mutation {
