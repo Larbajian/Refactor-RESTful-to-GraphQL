@@ -8,8 +8,9 @@ import {
   Row
 } from 'react-bootstrap';
 
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { SAVE_USER_BOOK } from '../utils/mutations';
+import { QUERY_ME } from '../utils/queries';
 
 import Auth from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
@@ -65,8 +66,6 @@ const SearchBooks = () => {
 
   // create function to handle saving a book to our database
 
-  const handleSaveBook = async (event) => {
-    event.preventDefault();
     const [savedBook, setSavedBook] = useState({
       title:'',
       image:'',
@@ -75,25 +74,38 @@ const SearchBooks = () => {
       bookId:''
     });
   
-    const [saveUserBook, { error, data }] = useMutation(SAVE_USER_BOOK);
-
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    if (!token) {
-      return false;
+    const [saveUserBook, { error }] = useMutation(SAVE_USER_BOOK, {
+      update(cache, {data: {saveUserBook}}){
+        try {
+          const { books } = cache.readQuery({ query: QUERY_ME });
+  
+          cache.writeQuery({
+            query: QUERY_ME,
+            data: { savedBooks: [saveUserBook, ...books] },
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
+    const handleSaveBook = async (event) => {
+      event.preventDefault();
+      const token = Auth.loggedIn() ? Auth.getToken() : null;
+      if (!token) {
+        return false;
+      }
+  
+      try {
+        const {data} = await saveUserBook({
+          variables: {...savedBook}
+        });
+        setSavedBook([...savedBook, ])
+      }
+      catch (err) {
+        console.error(err)
+      }
     }
 
-    try {
-      const {data} = await saveUserBook({
-        variables: {...savedBook}
-      });
-      setSavedBook([...savedBook, ])
-    }
-    catch (err) {
-      console.error(err)
-    }
-
-}
 
 
 
@@ -161,7 +173,7 @@ const SearchBooks = () => {
       </Container>
     </>
   );
-};
 
+        }
 
 export default SearchBooks;
