@@ -7,7 +7,7 @@ import { ADD_USER } from '../utils/mutations';
 
 import Auth from '../utils/auth';
 
-const Signup = () => {
+const SignupForm = () => {
   const [formState, setFormState] = useState({
     username: '',
     email: '',
