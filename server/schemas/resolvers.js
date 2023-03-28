@@ -35,7 +35,7 @@ const resolvers = {
       return { jwToken, user };
     },
 
-    saveBook: async (parent, { userId, bookId, authors, description, title, string, image}, context) => {
+    saveUserBook: async (parent, { userId, bookId, authors, description, title, string, image}, context) => {
       if (context.user) {
         return User.findOneAndUpdate(
           { _id: userId },
