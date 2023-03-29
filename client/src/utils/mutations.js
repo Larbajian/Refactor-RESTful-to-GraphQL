@@ -41,10 +41,14 @@ export const SAVE_USER_BOOK = gql`
         user{
             _id
             username
-            bookCount
+            email
             savedBooks {
                 _id
+                authors
+                image
                 title
+                description
+                link
             }
     }
   }
@@ -64,3 +68,4 @@ export const REMOVE_BOOK = gql`
     }
   }
 `;
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Container,
   Card,
@@ -6,7 +6,7 @@ import {
   Row,
   Col
 } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+//import { useParams } from 'react-router-dom';
 import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
@@ -29,23 +29,40 @@ const {loading, data } = useQuery(QUERY_ME, {
 const userData = data?.user || {};
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
-  const handleDeleteBook = async(event) =>{
-    event.preventDefault();
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    if (!token) {
-      return false;
-    }
+  const bookDelete = () => {  
 
-    const [ removeBook, {error} ] = useMutation(REMOVE_BOOK);
-
-    try {
-       removeBook({
-        variables: { _id:id},
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const [deleteBook, setDeleteBook] = useState({
+      title:'',
+      image:'',
+      authors:'',
+      description:'',
+      bookId:''
+    });  
+    const [removeBook, { error,data }] = useMutation(REMOVE_BOOK);
+  
+      const handleChange = async (event) => {
+        const {name, value} = event.target;
+        setDeleteBook({
+          ...deleteBook,
+          [name]:value,
+        });
+  
+  
+        const handleDeleteBook = async (event) =>{  
+        event.preventDefault();
+    
+        try {
+          const {data} = await removeBook({
+            variables: {...deleteBook}
+          });
+      
+          Auth.loggedIn(data.removeBook.token);
+        }
+        catch (err) {
+          console.error(err);
+        }
+      };
+    };
   // if data isn't here yet, say so
   if (loading) {
     return <h2>LOADING...</h2>;
@@ -87,6 +104,6 @@ const userData = data?.user || {};
     </>
   );
 };
-
+}
 
 export default SavedBooks;
