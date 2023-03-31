@@ -14,5 +14,12 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^5.3.0"
-  }
+  },
+
+    "buildpacks": [
+      {
+        "url": "mars/create-react-app"
+      }
+    ]
+  
 }
