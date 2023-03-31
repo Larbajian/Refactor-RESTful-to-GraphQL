@@ -4,6 +4,8 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
+import React, { Component } from 'react';
+
 
 const client = new ApolloClient({
   uri: '/graphql',
